@@ -82,4 +82,9 @@ public class OrderAggregate {
         this.orderConfirmed = false;
         this.orderLines = new HashMap<>();
     }
+
+    @EventSourcingHandler
+    public void on(OrderConfirmedEvent event) {
+        this.orderConfirmed = true;
+    }
 }
