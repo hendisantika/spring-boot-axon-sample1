@@ -2,6 +2,7 @@ package com.hendisantika.springbootaxonsample1.order;
 
 import com.hendisantika.springbootaxonsample1.coreapi.command.DecrementProductCountCommand;
 import com.hendisantika.springbootaxonsample1.coreapi.command.IncrementProductCountCommand;
+import com.hendisantika.springbootaxonsample1.coreapi.events.OrderConfirmedEvent;
 import com.hendisantika.springbootaxonsample1.coreapi.events.ProductCountDecrementedEvent;
 import com.hendisantika.springbootaxonsample1.coreapi.events.ProductCountIncrementedEvent;
 import com.hendisantika.springbootaxonsample1.coreapi.events.ProductRemovedEvent;
@@ -63,4 +64,10 @@ public class OrderLine {
     public void on(ProductCountDecrementedEvent event) {
         this.count--;
     }
+
+    @EventSourcingHandler
+    public void on(OrderConfirmedEvent event) {
+        this.orderConfirmed = true;
+    }
+
 }
