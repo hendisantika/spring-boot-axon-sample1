@@ -1,10 +1,15 @@
 package com.hendisantika.springbootaxonsample1.order;
 
+import com.hendisantika.springbootaxonsample1.coreapi.command.CreateOrderCommand;
+import com.hendisantika.springbootaxonsample1.coreapi.events.OrderCreatedEvent;
+import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.modelling.command.AggregateIdentifier;
 import org.axonframework.modelling.command.AggregateMember;
 import org.axonframework.spring.stereotype.Aggregate;
 
 import java.util.Map;
+
+import static org.axonframework.modelling.command.AggregateLifecycle.apply;
 
 /**
  * Created by IntelliJ IDEA.
@@ -23,4 +28,9 @@ public class OrderAggregate {
 
     @AggregateMember
     private Map<String, OrderLine> orderLines;
+
+    @CommandHandler
+    public OrderAggregate(CreateOrderCommand command) {
+        apply(new OrderCreatedEvent(command.getOrderId()));
+    }
 }
