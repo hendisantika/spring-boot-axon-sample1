@@ -60,4 +60,10 @@ public class OrderRestEndpoint {
     public CompletableFuture<String> createOrder(@PathVariable("order-id") String orderId) {
         return commandGateway.send(new CreateOrderCommand(orderId));
     }
+
+    @PostMapping("/order/{order-id}/product/{product-id}")
+    public CompletableFuture<Void> addProduct(@PathVariable("order-id") String orderId,
+                                              @PathVariable("product-id") String productId) {
+        return commandGateway.send(new AddProductCommand(orderId, productId));
+    }
 }
