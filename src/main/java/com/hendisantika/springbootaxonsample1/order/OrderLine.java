@@ -58,4 +58,9 @@ public class OrderLine {
     public void on(ProductCountIncrementedEvent event) {
         this.count++;
     }
+
+    @EventSourcingHandler
+    public void on(ProductCountDecrementedEvent event) {
+        this.count--;
+    }
 }
