@@ -6,12 +6,17 @@ import com.hendisantika.springbootaxonsample1.coreapi.command.CreateOrderCommand
 import com.hendisantika.springbootaxonsample1.coreapi.command.DecrementProductCountCommand;
 import com.hendisantika.springbootaxonsample1.coreapi.command.IncrementProductCountCommand;
 import com.hendisantika.springbootaxonsample1.coreapi.command.ShipOrderCommand;
+import com.hendisantika.springbootaxonsample1.coreapi.queries.FindAllOrderedProductsQuery;
+import com.hendisantika.springbootaxonsample1.coreapi.queries.Order;
 import org.axonframework.commandhandling.gateway.CommandGateway;
+import org.axonframework.messaging.responsetypes.ResponseTypes;
 import org.axonframework.queryhandling.QueryGateway;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -89,5 +94,10 @@ public class OrderRestEndpoint {
     @PostMapping("/order/{order-id}/ship")
     public CompletableFuture<Void> shipOrder(@PathVariable("order-id") String orderId) {
         return commandGateway.send(new ShipOrderCommand(orderId));
+    }
+
+    @GetMapping("/all-orders")
+    public CompletableFuture<List<Order>> findAllOrders() {
+        return queryGateway.query(new FindAllOrderedProductsQuery(), ResponseTypes.multipleInstancesOf(Order.class));
     }
 }
