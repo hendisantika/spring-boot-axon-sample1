@@ -49,4 +49,9 @@ public class OrderRestEndpoint {
                 // This throws an exception, as an Order cannot be shipped if it has not been confirmed yet.
                 .thenCompose(result -> commandGateway.send(new ShipOrderCommand(orderId)));
     }
+
+    @PostMapping("/order")
+    public CompletableFuture<String> createOrder() {
+        return createOrder(UUID.randomUUID().toString());
+    }
 }
