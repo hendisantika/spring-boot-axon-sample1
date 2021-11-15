@@ -80,4 +80,9 @@ public class OrderRestEndpoint {
                                                     @PathVariable("product-id") String productId) {
         return commandGateway.send(new DecrementProductCountCommand(orderId, productId));
     }
+
+    @PostMapping("/order/{order-id}/confirm")
+    public CompletableFuture<Void> confirmOrder(@PathVariable("order-id") String orderId) {
+        return commandGateway.send(new ConfirmOrderCommand(orderId));
+    }
 }
