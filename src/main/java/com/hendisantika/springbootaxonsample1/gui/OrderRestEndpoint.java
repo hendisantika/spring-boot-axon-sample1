@@ -3,6 +3,7 @@ package com.hendisantika.springbootaxonsample1.gui;
 import com.hendisantika.springbootaxonsample1.coreapi.command.AddProductCommand;
 import com.hendisantika.springbootaxonsample1.coreapi.command.ConfirmOrderCommand;
 import com.hendisantika.springbootaxonsample1.coreapi.command.CreateOrderCommand;
+import com.hendisantika.springbootaxonsample1.coreapi.command.IncrementProductCountCommand;
 import com.hendisantika.springbootaxonsample1.coreapi.command.ShipOrderCommand;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.queryhandling.QueryGateway;
@@ -65,5 +66,11 @@ public class OrderRestEndpoint {
     public CompletableFuture<Void> addProduct(@PathVariable("order-id") String orderId,
                                               @PathVariable("product-id") String productId) {
         return commandGateway.send(new AddProductCommand(orderId, productId));
+    }
+
+    @PostMapping("/order/{order-id}/product/{product-id}/increment")
+    public CompletableFuture<Void> incrementProduct(@PathVariable("order-id") String orderId,
+                                                    @PathVariable("product-id") String productId) {
+        return commandGateway.send(new IncrementProductCountCommand(orderId, productId));
     }
 }
