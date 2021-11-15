@@ -1,4 +1,4 @@
-package com.example.springbootaxonsample1;
+package com.hendisantika.springbootaxonsample1;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
