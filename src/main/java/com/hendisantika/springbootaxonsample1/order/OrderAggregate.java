@@ -12,10 +12,12 @@ import com.hendisantika.springbootaxonsample1.coreapi.exceptions.DuplicateOrderL
 import com.hendisantika.springbootaxonsample1.coreapi.exceptions.OrderAlreadyConfirmedException;
 import com.hendisantika.springbootaxonsample1.coreapi.exceptions.UnconfirmedOrderException;
 import org.axonframework.commandhandling.CommandHandler;
+import org.axonframework.eventsourcing.EventSourcingHandler;
 import org.axonframework.modelling.command.AggregateIdentifier;
 import org.axonframework.modelling.command.AggregateMember;
 import org.axonframework.spring.stereotype.Aggregate;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import static org.axonframework.modelling.command.AggregateLifecycle.apply;
@@ -72,5 +74,12 @@ public class OrderAggregate {
         }
 
         apply(new OrderShippedEvent(orderId));
+    }
+
+    @EventSourcingHandler
+    public void on(OrderCreatedEvent event) {
+        this.orderId = event.getOrderId();
+        this.orderConfirmed = false;
+        this.orderLines = new HashMap<>();
     }
 }
