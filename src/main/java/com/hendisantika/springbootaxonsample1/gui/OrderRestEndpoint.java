@@ -85,4 +85,9 @@ public class OrderRestEndpoint {
     public CompletableFuture<Void> confirmOrder(@PathVariable("order-id") String orderId) {
         return commandGateway.send(new ConfirmOrderCommand(orderId));
     }
+
+    @PostMapping("/order/{order-id}/ship")
+    public CompletableFuture<Void> shipOrder(@PathVariable("order-id") String orderId) {
+        return commandGateway.send(new ShipOrderCommand(orderId));
+    }
 }
