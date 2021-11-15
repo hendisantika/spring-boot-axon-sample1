@@ -1,7 +1,9 @@
 package com.hendisantika.springbootaxonsample1.order;
 
 import com.hendisantika.springbootaxonsample1.coreapi.command.AddProductCommand;
+import com.hendisantika.springbootaxonsample1.coreapi.command.ConfirmOrderCommand;
 import com.hendisantika.springbootaxonsample1.coreapi.command.CreateOrderCommand;
+import com.hendisantika.springbootaxonsample1.coreapi.events.OrderConfirmedEvent;
 import com.hendisantika.springbootaxonsample1.coreapi.events.OrderCreatedEvent;
 import com.hendisantika.springbootaxonsample1.coreapi.events.ProductAddedEvent;
 import com.hendisantika.springbootaxonsample1.coreapi.exceptions.DuplicateOrderLineException;
@@ -49,5 +51,14 @@ public class OrderAggregate {
             throw new DuplicateOrderLineException(productId);
         }
         apply(new ProductAddedEvent(orderId, productId));
+    }
+
+    @CommandHandler
+    public void handle(ConfirmOrderCommand command) {
+        if (orderConfirmed) {
+            return;
+        }
+
+        apply(new OrderConfirmedEvent(orderId));
     }
 }
