@@ -3,11 +3,14 @@ package com.hendisantika.springbootaxonsample1.order;
 import com.hendisantika.springbootaxonsample1.coreapi.command.AddProductCommand;
 import com.hendisantika.springbootaxonsample1.coreapi.command.ConfirmOrderCommand;
 import com.hendisantika.springbootaxonsample1.coreapi.command.CreateOrderCommand;
+import com.hendisantika.springbootaxonsample1.coreapi.command.ShipOrderCommand;
 import com.hendisantika.springbootaxonsample1.coreapi.events.OrderConfirmedEvent;
 import com.hendisantika.springbootaxonsample1.coreapi.events.OrderCreatedEvent;
+import com.hendisantika.springbootaxonsample1.coreapi.events.OrderShippedEvent;
 import com.hendisantika.springbootaxonsample1.coreapi.events.ProductAddedEvent;
 import com.hendisantika.springbootaxonsample1.coreapi.exceptions.DuplicateOrderLineException;
 import com.hendisantika.springbootaxonsample1.coreapi.exceptions.OrderAlreadyConfirmedException;
+import com.hendisantika.springbootaxonsample1.coreapi.exceptions.UnconfirmedOrderException;
 import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.modelling.command.AggregateIdentifier;
 import org.axonframework.modelling.command.AggregateMember;
@@ -60,5 +63,14 @@ public class OrderAggregate {
         }
 
         apply(new OrderConfirmedEvent(orderId));
+    }
+
+    @CommandHandler
+    public void handle(ShipOrderCommand command) {
+        if (!orderConfirmed) {
+            throw new UnconfirmedOrderException();
+        }
+
+        apply(new OrderShippedEvent(orderId));
     }
 }
