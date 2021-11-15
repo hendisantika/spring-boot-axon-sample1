@@ -1,6 +1,12 @@
 package com.hendisantika.springbootaxonsample1.order;
 
+import com.hendisantika.springbootaxonsample1.coreapi.command.IncrementProductCountCommand;
+import com.hendisantika.springbootaxonsample1.coreapi.events.ProductCountIncrementedEvent;
+import com.hendisantika.springbootaxonsample1.coreapi.exceptions.OrderAlreadyConfirmedException;
+import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.modelling.command.EntityId;
+
+import static org.axonframework.modelling.command.AggregateLifecycle.apply;
 
 /**
  * Created by IntelliJ IDEA.
@@ -22,4 +28,12 @@ public class OrderLine {
         this.count = 1;
     }
 
+    @CommandHandler
+    public void handle(IncrementProductCountCommand command) {
+        if (orderConfirmed) {
+            throw new OrderAlreadyConfirmedException(command.getOrderId());
+        }
+
+        apply(new ProductCountIncrementedEvent(command.getOrderId(), productId));
+    }
 }
