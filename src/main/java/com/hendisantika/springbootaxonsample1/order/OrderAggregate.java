@@ -1,7 +1,11 @@
 package com.hendisantika.springbootaxonsample1.order;
 
+import com.hendisantika.springbootaxonsample1.coreapi.command.AddProductCommand;
 import com.hendisantika.springbootaxonsample1.coreapi.command.CreateOrderCommand;
 import com.hendisantika.springbootaxonsample1.coreapi.events.OrderCreatedEvent;
+import com.hendisantika.springbootaxonsample1.coreapi.events.ProductAddedEvent;
+import com.hendisantika.springbootaxonsample1.coreapi.exceptions.DuplicateOrderLineException;
+import com.hendisantika.springbootaxonsample1.coreapi.exceptions.OrderAlreadyConfirmedException;
 import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.modelling.command.AggregateIdentifier;
 import org.axonframework.modelling.command.AggregateMember;
@@ -32,5 +36,18 @@ public class OrderAggregate {
     @CommandHandler
     public OrderAggregate(CreateOrderCommand command) {
         apply(new OrderCreatedEvent(command.getOrderId()));
+    }
+
+    @CommandHandler
+    public void handle(AddProductCommand command) {
+        if (orderConfirmed) {
+            throw new OrderAlreadyConfirmedException(orderId);
+        }
+
+        String productId = command.getProductId();
+        if (orderLines.containsKey(productId)) {
+            throw new DuplicateOrderLineException(productId);
+        }
+        apply(new ProductAddedEvent(orderId, productId));
     }
 }
