@@ -1,8 +1,16 @@
 package com.hendisantika.springbootaxonsample1.gui;
 
+import com.hendisantika.springbootaxonsample1.coreapi.command.AddProductCommand;
+import com.hendisantika.springbootaxonsample1.coreapi.command.ConfirmOrderCommand;
+import com.hendisantika.springbootaxonsample1.coreapi.command.CreateOrderCommand;
+import com.hendisantika.springbootaxonsample1.coreapi.command.ShipOrderCommand;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.queryhandling.QueryGateway;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * Created by IntelliJ IDEA.
@@ -22,5 +30,14 @@ public class OrderRestEndpoint {
     public OrderRestEndpoint(CommandGateway commandGateway, QueryGateway queryGateway) {
         this.commandGateway = commandGateway;
         this.queryGateway = queryGateway;
+    }
+
+    @PostMapping("/ship-order")
+    public CompletableFuture<Void> shipOrder() {
+        String orderId = UUID.randomUUID().toString();
+        return commandGateway.send(new CreateOrderCommand(orderId))
+                .thenCompose(result -> commandGateway.send(new AddProductCommand(orderId, "Deluxe Chair")))
+                .thenCompose(result -> commandGateway.send(new ConfirmOrderCommand(orderId)))
+                .thenCompose(result -> commandGateway.send(new ShipOrderCommand(orderId)));
     }
 }
