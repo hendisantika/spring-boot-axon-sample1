@@ -8,6 +8,7 @@ import com.hendisantika.springbootaxonsample1.coreapi.events.OrderConfirmedEvent
 import com.hendisantika.springbootaxonsample1.coreapi.events.OrderCreatedEvent;
 import com.hendisantika.springbootaxonsample1.coreapi.events.OrderShippedEvent;
 import com.hendisantika.springbootaxonsample1.coreapi.events.ProductAddedEvent;
+import com.hendisantika.springbootaxonsample1.coreapi.events.ProductRemovedEvent;
 import com.hendisantika.springbootaxonsample1.coreapi.exceptions.DuplicateOrderLineException;
 import com.hendisantika.springbootaxonsample1.coreapi.exceptions.OrderAlreadyConfirmedException;
 import com.hendisantika.springbootaxonsample1.coreapi.exceptions.UnconfirmedOrderException;
@@ -92,5 +93,14 @@ public class OrderAggregate {
     public void on(ProductAddedEvent event) {
         String productId = event.getProductId();
         this.orderLines.put(productId, new OrderLine(productId));
+    }
+
+    protected OrderAggregate() {
+        // Required by Axon to build a default Aggregate prior to Event Sourcing
+    }
+
+    @EventSourcingHandler
+    public void on(ProductRemovedEvent event) {
+        this.orderLines.remove(event.getProductId());
     }
 }
