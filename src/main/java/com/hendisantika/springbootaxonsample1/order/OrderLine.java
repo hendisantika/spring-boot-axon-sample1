@@ -1,7 +1,10 @@
 package com.hendisantika.springbootaxonsample1.order;
 
+import com.hendisantika.springbootaxonsample1.coreapi.command.DecrementProductCountCommand;
 import com.hendisantika.springbootaxonsample1.coreapi.command.IncrementProductCountCommand;
+import com.hendisantika.springbootaxonsample1.coreapi.events.ProductCountDecrementedEvent;
 import com.hendisantika.springbootaxonsample1.coreapi.events.ProductCountIncrementedEvent;
+import com.hendisantika.springbootaxonsample1.coreapi.events.ProductRemovedEvent;
 import com.hendisantika.springbootaxonsample1.coreapi.exceptions.OrderAlreadyConfirmedException;
 import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.modelling.command.EntityId;
@@ -35,5 +38,18 @@ public class OrderLine {
         }
 
         apply(new ProductCountIncrementedEvent(command.getOrderId(), productId));
+    }
+
+    @CommandHandler
+    public void handle(DecrementProductCountCommand command) {
+        if (orderConfirmed) {
+            throw new OrderAlreadyConfirmedException(command.getOrderId());
+        }
+
+        if (count <= 1) {
+            apply(new ProductRemovedEvent(command.getOrderId(), productId));
+        } else {
+            apply(new ProductCountDecrementedEvent(command.getOrderId(), productId));
+        }
     }
 }
