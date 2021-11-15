@@ -7,6 +7,7 @@ import com.hendisantika.springbootaxonsample1.coreapi.events.ProductCountIncreme
 import com.hendisantika.springbootaxonsample1.coreapi.events.ProductRemovedEvent;
 import com.hendisantika.springbootaxonsample1.coreapi.exceptions.OrderAlreadyConfirmedException;
 import org.axonframework.commandhandling.CommandHandler;
+import org.axonframework.eventsourcing.EventSourcingHandler;
 import org.axonframework.modelling.command.EntityId;
 
 import static org.axonframework.modelling.command.AggregateLifecycle.apply;
@@ -51,5 +52,10 @@ public class OrderLine {
         } else {
             apply(new ProductCountDecrementedEvent(command.getOrderId(), productId));
         }
+    }
+
+    @EventSourcingHandler
+    public void on(ProductCountIncrementedEvent event) {
+        this.count++;
     }
 }
