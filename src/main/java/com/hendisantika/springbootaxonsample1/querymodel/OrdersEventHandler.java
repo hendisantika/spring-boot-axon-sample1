@@ -1,7 +1,9 @@
 package com.hendisantika.springbootaxonsample1.querymodel;
 
+import com.hendisantika.springbootaxonsample1.coreapi.events.OrderCreatedEvent;
 import com.hendisantika.springbootaxonsample1.coreapi.queries.Order;
 import org.axonframework.config.ProcessingGroup;
+import org.axonframework.eventhandling.EventHandler;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -22,4 +24,9 @@ public class OrdersEventHandler {
 
     private final Map<String, Order> orders = new HashMap<>();
 
+    @EventHandler
+    public void on(OrderCreatedEvent event) {
+        String orderId = event.getOrderId();
+        orders.put(orderId, new Order(orderId));
+    }
 }
