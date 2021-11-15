@@ -7,12 +7,16 @@ import com.hendisantika.springbootaxonsample1.coreapi.events.ProductAddedEvent;
 import com.hendisantika.springbootaxonsample1.coreapi.events.ProductCountDecrementedEvent;
 import com.hendisantika.springbootaxonsample1.coreapi.events.ProductCountIncrementedEvent;
 import com.hendisantika.springbootaxonsample1.coreapi.events.ProductRemovedEvent;
+import com.hendisantika.springbootaxonsample1.coreapi.queries.FindAllOrderedProductsQuery;
 import com.hendisantika.springbootaxonsample1.coreapi.queries.Order;
 import org.axonframework.config.ProcessingGroup;
 import org.axonframework.eventhandling.EventHandler;
+import org.axonframework.queryhandling.QueryHandler;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -82,5 +86,10 @@ public class OrdersEventHandler {
             order.setOrderShipped();
             return order;
         });
+    }
+
+    @QueryHandler
+    public List<Order> handle(FindAllOrderedProductsQuery query) {
+        return new ArrayList<>(orders.values());
     }
 }
