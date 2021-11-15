@@ -4,6 +4,7 @@ import com.hendisantika.springbootaxonsample1.coreapi.events.OrderCreatedEvent;
 import com.hendisantika.springbootaxonsample1.coreapi.events.ProductAddedEvent;
 import com.hendisantika.springbootaxonsample1.coreapi.events.ProductCountDecrementedEvent;
 import com.hendisantika.springbootaxonsample1.coreapi.events.ProductCountIncrementedEvent;
+import com.hendisantika.springbootaxonsample1.coreapi.events.ProductRemovedEvent;
 import com.hendisantika.springbootaxonsample1.coreapi.queries.Order;
 import org.axonframework.config.ProcessingGroup;
 import org.axonframework.eventhandling.EventHandler;
@@ -53,6 +54,14 @@ public class OrdersEventHandler {
     public void on(ProductCountDecrementedEvent event) {
         orders.computeIfPresent(event.getOrderId(), (orderId, order) -> {
             order.decrementProductInstance(event.getProductId());
+            return order;
+        });
+    }
+
+    @EventHandler
+    public void on(ProductRemovedEvent event) {
+        orders.computeIfPresent(event.getOrderId(), (orderId, order) -> {
+            order.removeProduct(event.getProductId());
             return order;
         });
     }
