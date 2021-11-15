@@ -1,5 +1,6 @@
 package com.hendisantika.springbootaxonsample1.querymodel;
 
+import com.hendisantika.springbootaxonsample1.coreapi.events.OrderConfirmedEvent;
 import com.hendisantika.springbootaxonsample1.coreapi.events.OrderCreatedEvent;
 import com.hendisantika.springbootaxonsample1.coreapi.events.ProductAddedEvent;
 import com.hendisantika.springbootaxonsample1.coreapi.events.ProductCountDecrementedEvent;
@@ -62,6 +63,14 @@ public class OrdersEventHandler {
     public void on(ProductRemovedEvent event) {
         orders.computeIfPresent(event.getOrderId(), (orderId, order) -> {
             order.removeProduct(event.getProductId());
+            return order;
+        });
+    }
+
+    @EventHandler
+    public void on(OrderConfirmedEvent event) {
+        orders.computeIfPresent(event.getOrderId(), (orderId, order) -> {
+            order.setOrderConfirmed();
             return order;
         });
     }
