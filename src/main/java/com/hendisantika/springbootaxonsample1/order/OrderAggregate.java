@@ -87,4 +87,10 @@ public class OrderAggregate {
     public void on(OrderConfirmedEvent event) {
         this.orderConfirmed = true;
     }
+
+    @EventSourcingHandler
+    public void on(ProductAddedEvent event) {
+        String productId = event.getProductId();
+        this.orderLines.put(productId, new OrderLine(productId));
+    }
 }
