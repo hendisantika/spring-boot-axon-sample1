@@ -11,6 +11,8 @@ import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.eventsourcing.EventSourcingHandler;
 import org.axonframework.modelling.command.EntityId;
 
+import java.util.Objects;
+
 import static org.axonframework.modelling.command.AggregateLifecycle.apply;
 
 /**
@@ -25,7 +27,7 @@ import static org.axonframework.modelling.command.AggregateLifecycle.apply;
 public class OrderLine {
     @EntityId
     private final String productId;
-    private final Integer count;
+    private Integer count;
     private boolean orderConfirmed;
 
     public OrderLine(String productId) {
@@ -70,4 +72,20 @@ public class OrderLine {
         this.orderConfirmed = true;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        OrderLine orderLine = (OrderLine) o;
+        return Objects.equals(productId, orderLine.productId) && Objects.equals(count, orderLine.count);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(productId, count);
+    }
 }
