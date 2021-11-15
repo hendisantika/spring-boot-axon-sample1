@@ -6,6 +6,7 @@ import com.hendisantika.springbootaxonsample1.coreapi.command.CreateOrderCommand
 import com.hendisantika.springbootaxonsample1.coreapi.command.ShipOrderCommand;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.axonframework.queryhandling.QueryGateway;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -53,5 +54,10 @@ public class OrderRestEndpoint {
     @PostMapping("/order")
     public CompletableFuture<String> createOrder() {
         return createOrder(UUID.randomUUID().toString());
+    }
+
+    @PostMapping("/order/{order-id}")
+    public CompletableFuture<String> createOrder(@PathVariable("order-id") String orderId) {
+        return commandGateway.send(new CreateOrderCommand(orderId));
     }
 }
