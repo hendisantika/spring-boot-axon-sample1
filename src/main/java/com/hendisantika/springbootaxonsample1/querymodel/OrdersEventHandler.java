@@ -1,6 +1,7 @@
 package com.hendisantika.springbootaxonsample1.querymodel;
 
 import com.hendisantika.springbootaxonsample1.coreapi.events.OrderCreatedEvent;
+import com.hendisantika.springbootaxonsample1.coreapi.events.ProductAddedEvent;
 import com.hendisantika.springbootaxonsample1.coreapi.queries.Order;
 import org.axonframework.config.ProcessingGroup;
 import org.axonframework.eventhandling.EventHandler;
@@ -28,5 +29,13 @@ public class OrdersEventHandler {
     public void on(OrderCreatedEvent event) {
         String orderId = event.getOrderId();
         orders.put(orderId, new Order(orderId));
+    }
+
+    @EventHandler
+    public void on(ProductAddedEvent event) {
+        orders.computeIfPresent(event.getOrderId(), (orderId, order) -> {
+            order.addProduct(event.getProductId());
+            return order;
+        });
     }
 }
