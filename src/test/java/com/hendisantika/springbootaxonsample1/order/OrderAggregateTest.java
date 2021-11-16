@@ -14,6 +14,7 @@ import com.hendisantika.springbootaxonsample1.coreapi.events.ProductCountDecreme
 import com.hendisantika.springbootaxonsample1.coreapi.events.ProductCountIncrementedEvent;
 import com.hendisantika.springbootaxonsample1.coreapi.events.ProductRemovedEvent;
 import com.hendisantika.springbootaxonsample1.coreapi.exceptions.DuplicateOrderLineException;
+import com.hendisantika.springbootaxonsample1.coreapi.exceptions.OrderAlreadyConfirmedException;
 import com.hendisantika.springbootaxonsample1.coreapi.exceptions.UnconfirmedOrderException;
 import org.axonframework.test.aggregate.AggregateTestFixture;
 import org.axonframework.test.aggregate.FixtureConfiguration;
@@ -115,4 +116,13 @@ class OrderAggregateTest {
                 .when(new ShipOrderCommand(ORDER_ID))
                 .expectEvents(new OrderShippedEvent(ORDER_ID));
     }
+
+    @Test
+    void givenOrderCreatedEventProductAndOrderConfirmedEvent_whenAddProductCommand_thenShouldThrowOrderAlreadyConfirmedException() {
+        fixture.given(new OrderCreatedEvent(ORDER_ID), new OrderConfirmedEvent(ORDER_ID))
+                .when(new AddProductCommand(ORDER_ID, PRODUCT_ID))
+                .expectException(OrderAlreadyConfirmedException.class)
+                .expectExceptionMessage(Matchers.predicate(message -> ((String) message).contains(ORDER_ID)));
+    }
+
 }
