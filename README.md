@@ -35,3 +35,43 @@ mechanism towards the Event Store contained within Axon Server.
 
 The default configuration of Axon Server together with the axon-spring-boot-starter dependency will ensure our Order
 service will automatically connect to it.
+
+### Order Service API – Commands
+
+We'll set up our Order service with CQRS in mind. Therefore we'll emphasize the messages that flow through our
+application.
+
+**First, we'll define the Commands, meaning the expressions of intent.** The Order service is capable of handling three
+different types of actions:
+
+1. Creating a new order
+2. Confirming an order
+3. Shipping an order
+
+Naturally, there will be three command messages that our domain can deal with — _CreateOrderCommand,
+ConfirmOrderCommand, and ShipOrderCommand_:
+
+```java
+public class CreateOrderCommand {
+ 
+    @TargetAggregateIdentifier
+    private final String orderId;
+    private final String productId;
+ 
+    // constructor, getters, equals/hashCode and toString 
+}
+public class ConfirmOrderCommand {
+ 
+    @TargetAggregateIdentifier
+    private final String orderId;
+    
+    // constructor, getters, equals/hashCode and toString
+}
+public class ShipOrderCommand {
+ 
+    @TargetAggregateIdentifier
+    private final String orderId;
+ 
+    // constructor, getters, equals/hashCode and toString
+}
+```
