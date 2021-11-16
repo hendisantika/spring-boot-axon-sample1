@@ -91,4 +91,11 @@ class OrderAggregateTest {
                 .when(new ConfirmOrderCommand(ORDER_ID))
                 .expectEvents(new OrderConfirmedEvent(ORDER_ID));
     }
+
+    @Test
+    void givenOrderCreatedEventAndOrderConfirmedEvent_whenConfirmOrderCommand_thenExpectNoEvents() {
+        fixture.given(new OrderCreatedEvent(ORDER_ID), new OrderConfirmedEvent(ORDER_ID))
+                .when(new ConfirmOrderCommand(ORDER_ID))
+                .expectNoEvents();
+    }
 }
