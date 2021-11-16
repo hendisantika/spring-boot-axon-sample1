@@ -2,8 +2,10 @@ package com.hendisantika.springbootaxonsample1.order;
 
 import com.hendisantika.springbootaxonsample1.coreapi.command.AddProductCommand;
 import com.hendisantika.springbootaxonsample1.coreapi.command.CreateOrderCommand;
+import com.hendisantika.springbootaxonsample1.coreapi.command.IncrementProductCountCommand;
 import com.hendisantika.springbootaxonsample1.coreapi.events.OrderCreatedEvent;
 import com.hendisantika.springbootaxonsample1.coreapi.events.ProductAddedEvent;
+import com.hendisantika.springbootaxonsample1.coreapi.events.ProductCountIncrementedEvent;
 import com.hendisantika.springbootaxonsample1.coreapi.exceptions.DuplicateOrderLineException;
 import org.axonframework.test.aggregate.AggregateTestFixture;
 import org.axonframework.test.aggregate.FixtureConfiguration;
@@ -53,5 +55,12 @@ class OrderAggregateTest {
                 .when(new AddProductCommand(ORDER_ID, PRODUCT_ID))
                 .expectException(DuplicateOrderLineException.class)
                 .expectExceptionMessage(Matchers.predicate(message -> ((String) message).contains(PRODUCT_ID)));
+    }
+
+    @Test
+    void givenOrderCreatedEventAndProductAddedEvent_whenIncrementProductCountCommand_thenShouldPublishProductCountIncrementedEvent() {
+        fixture.given(new OrderCreatedEvent(ORDER_ID), new ProductAddedEvent(ORDER_ID, PRODUCT_ID))
+                .when(new IncrementProductCountCommand(ORDER_ID, PRODUCT_ID))
+                .expectEvents(new ProductCountIncrementedEvent(ORDER_ID, PRODUCT_ID));
     }
 }
