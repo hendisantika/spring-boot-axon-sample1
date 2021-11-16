@@ -13,3 +13,25 @@ Sourcing building blocks Axon provides us.**
 
 Note that a lot of the shared concepts come right out of [DDD](https://en.wikipedia.org/wiki/Domain-driven_design),
 which is beyond the scope of this current article.
+
+We will use [Axon Server](https://axoniq.io/product-overview/axon-server) to be
+our [Event Store](https://en.wikipedia.org/wiki/Event_store) and our dedicated command, event and query routing
+solution.
+
+As an Event Store, it gives us the ideal characteristics required when storing
+events. [This article](https://axoniq.io/blog-overview/eventstore) provides background on why this is desirable.
+
+As a Message Routing solution, it gives us the option to connect several instances together without focusing on
+configuring things like a RabbitMQ or a Kafka topic to share and dispatch messages.
+
+Axon Server can be downloaded [here](https://download.axoniq.io/axonserver/AxonServer.zip). As it is a simple JAR file,
+the following operation suffices to start it up:
+
+> java -jar axonserver.jar
+
+This will start a single Axon Server instance which is accessible through [localhost:8024](http://localhost:8024/). The
+endpoint provides an overview of the connected applications and the messages they can handle, as well as a querying
+mechanism towards the Event Store contained within Axon Server.
+
+The default configuration of Axon Server together with the axon-spring-boot-starter dependency will ensure our Order
+service will automatically connect to it.
