@@ -1,6 +1,8 @@
 package com.hendisantika.springbootaxonsample1.order;
 
+import org.axonframework.test.aggregate.AggregateTestFixture;
 import org.axonframework.test.aggregate.FixtureConfiguration;
+import org.junit.jupiter.api.BeforeEach;
 
 import java.util.UUID;
 
@@ -18,5 +20,10 @@ class OrderAggregateTest {
     private static final String PRODUCT_ID = UUID.randomUUID().toString();
 
     private FixtureConfiguration<OrderAggregate> fixture;
+
+    @BeforeEach
+    void setUp() {
+        fixture = new AggregateTestFixture<>(OrderAggregate.class);
+    }
 
 }
