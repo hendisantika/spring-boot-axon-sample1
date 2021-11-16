@@ -8,6 +8,7 @@ import com.hendisantika.springbootaxonsample1.coreapi.events.OrderCreatedEvent;
 import com.hendisantika.springbootaxonsample1.coreapi.events.ProductAddedEvent;
 import com.hendisantika.springbootaxonsample1.coreapi.events.ProductCountDecrementedEvent;
 import com.hendisantika.springbootaxonsample1.coreapi.events.ProductCountIncrementedEvent;
+import com.hendisantika.springbootaxonsample1.coreapi.events.ProductRemovedEvent;
 import com.hendisantika.springbootaxonsample1.coreapi.exceptions.DuplicateOrderLineException;
 import org.axonframework.test.aggregate.AggregateTestFixture;
 import org.axonframework.test.aggregate.FixtureConfiguration;
@@ -73,5 +74,12 @@ class OrderAggregateTest {
                         new ProductCountIncrementedEvent(ORDER_ID, PRODUCT_ID))
                 .when(new DecrementProductCountCommand(ORDER_ID, PRODUCT_ID))
                 .expectEvents(new ProductCountDecrementedEvent(ORDER_ID, PRODUCT_ID));
+    }
+
+    @Test
+    void givenOrderCreatedEventAndProductAddedEvent_whenDecrementProductCountCommand_thenShouldPublishProductRemovedEvent() {
+        fixture.given(new OrderCreatedEvent(ORDER_ID), new ProductAddedEvent(ORDER_ID, PRODUCT_ID))
+                .when(new DecrementProductCountCommand(ORDER_ID, PRODUCT_ID))
+                .expectEvents(new ProductRemovedEvent(ORDER_ID, PRODUCT_ID));
     }
 }
