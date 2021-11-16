@@ -1,7 +1,9 @@
 package com.hendisantika.springbootaxonsample1.order;
 
+import com.hendisantika.springbootaxonsample1.coreapi.command.AddProductCommand;
 import com.hendisantika.springbootaxonsample1.coreapi.command.CreateOrderCommand;
 import com.hendisantika.springbootaxonsample1.coreapi.events.OrderCreatedEvent;
+import com.hendisantika.springbootaxonsample1.coreapi.events.ProductAddedEvent;
 import org.axonframework.test.aggregate.AggregateTestFixture;
 import org.axonframework.test.aggregate.FixtureConfiguration;
 import org.junit.jupiter.api.BeforeEach;
@@ -36,4 +38,10 @@ class OrderAggregateTest {
                 .expectEvents(new OrderCreatedEvent(ORDER_ID));
     }
 
+    @Test
+    void givenOrderCreatedEvent_whenAddProductCommand_thenShouldPublishProductAddedEvent() {
+        fixture.given(new OrderCreatedEvent(ORDER_ID))
+                .when(new AddProductCommand(ORDER_ID, PRODUCT_ID))
+                .expectEvents(new ProductAddedEvent(ORDER_ID, PRODUCT_ID));
+    }
 }
