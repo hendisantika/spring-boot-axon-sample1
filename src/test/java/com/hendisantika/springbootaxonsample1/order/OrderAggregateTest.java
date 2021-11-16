@@ -1,9 +1,11 @@
 package com.hendisantika.springbootaxonsample1.order;
 
 import com.hendisantika.springbootaxonsample1.coreapi.command.AddProductCommand;
+import com.hendisantika.springbootaxonsample1.coreapi.command.ConfirmOrderCommand;
 import com.hendisantika.springbootaxonsample1.coreapi.command.CreateOrderCommand;
 import com.hendisantika.springbootaxonsample1.coreapi.command.DecrementProductCountCommand;
 import com.hendisantika.springbootaxonsample1.coreapi.command.IncrementProductCountCommand;
+import com.hendisantika.springbootaxonsample1.coreapi.events.OrderConfirmedEvent;
 import com.hendisantika.springbootaxonsample1.coreapi.events.OrderCreatedEvent;
 import com.hendisantika.springbootaxonsample1.coreapi.events.ProductAddedEvent;
 import com.hendisantika.springbootaxonsample1.coreapi.events.ProductCountDecrementedEvent;
@@ -81,5 +83,12 @@ class OrderAggregateTest {
         fixture.given(new OrderCreatedEvent(ORDER_ID), new ProductAddedEvent(ORDER_ID, PRODUCT_ID))
                 .when(new DecrementProductCountCommand(ORDER_ID, PRODUCT_ID))
                 .expectEvents(new ProductRemovedEvent(ORDER_ID, PRODUCT_ID));
+    }
+
+    @Test
+    void givenOrderCreatedEvent_whenConfirmOrderCommand_thenShouldPublishOrderConfirmedEvent() {
+        fixture.given(new OrderCreatedEvent(ORDER_ID))
+                .when(new ConfirmOrderCommand(ORDER_ID))
+                .expectEvents(new OrderConfirmedEvent(ORDER_ID));
     }
 }
