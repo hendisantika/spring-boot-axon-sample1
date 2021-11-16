@@ -1,8 +1,11 @@
 package com.hendisantika.springbootaxonsample1.order;
 
+import com.hendisantika.springbootaxonsample1.coreapi.command.CreateOrderCommand;
+import com.hendisantika.springbootaxonsample1.coreapi.events.OrderCreatedEvent;
 import org.axonframework.test.aggregate.AggregateTestFixture;
 import org.axonframework.test.aggregate.FixtureConfiguration;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.UUID;
 
@@ -24,6 +27,13 @@ class OrderAggregateTest {
     @BeforeEach
     void setUp() {
         fixture = new AggregateTestFixture<>(OrderAggregate.class);
+    }
+
+    @Test
+    void giveNoPriorActivity_whenCreateOrderCommand_thenShouldPublishOrderCreatedEvent() {
+        fixture.givenNoPriorActivity()
+                .when(new CreateOrderCommand(ORDER_ID))
+                .expectEvents(new OrderCreatedEvent(ORDER_ID));
     }
 
 }
