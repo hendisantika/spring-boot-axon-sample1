@@ -134,4 +134,14 @@ class OrderAggregateTest {
                 .expectException(OrderAlreadyConfirmedException.class)
                 .expectExceptionMessage(Matchers.predicate(message -> ((String) message).contains(ORDER_ID)));
     }
+
+    @Test
+    void givenOrderCreatedEventProductAddedEventAndOrderConfirmedEvent_whenDecrementProductCountCommand_thenShouldThrowOrderAlreadyConfirmedException() {
+        fixture.given(new OrderCreatedEvent(ORDER_ID),
+                        new ProductAddedEvent(ORDER_ID, PRODUCT_ID),
+                        new OrderConfirmedEvent(ORDER_ID))
+                .when(new DecrementProductCountCommand(ORDER_ID, PRODUCT_ID))
+                .expectException(OrderAlreadyConfirmedException.class)
+                .expectExceptionMessage(Matchers.predicate(message -> ((String) message).contains(ORDER_ID)));
+    }
 }
