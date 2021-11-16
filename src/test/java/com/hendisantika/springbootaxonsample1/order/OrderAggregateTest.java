@@ -5,6 +5,7 @@ import com.hendisantika.springbootaxonsample1.coreapi.command.ConfirmOrderComman
 import com.hendisantika.springbootaxonsample1.coreapi.command.CreateOrderCommand;
 import com.hendisantika.springbootaxonsample1.coreapi.command.DecrementProductCountCommand;
 import com.hendisantika.springbootaxonsample1.coreapi.command.IncrementProductCountCommand;
+import com.hendisantika.springbootaxonsample1.coreapi.command.ShipOrderCommand;
 import com.hendisantika.springbootaxonsample1.coreapi.events.OrderConfirmedEvent;
 import com.hendisantika.springbootaxonsample1.coreapi.events.OrderCreatedEvent;
 import com.hendisantika.springbootaxonsample1.coreapi.events.ProductAddedEvent;
@@ -12,6 +13,7 @@ import com.hendisantika.springbootaxonsample1.coreapi.events.ProductCountDecreme
 import com.hendisantika.springbootaxonsample1.coreapi.events.ProductCountIncrementedEvent;
 import com.hendisantika.springbootaxonsample1.coreapi.events.ProductRemovedEvent;
 import com.hendisantika.springbootaxonsample1.coreapi.exceptions.DuplicateOrderLineException;
+import com.hendisantika.springbootaxonsample1.coreapi.exceptions.UnconfirmedOrderException;
 import org.axonframework.test.aggregate.AggregateTestFixture;
 import org.axonframework.test.aggregate.FixtureConfiguration;
 import org.axonframework.test.matchers.Matchers;
@@ -97,5 +99,12 @@ class OrderAggregateTest {
         fixture.given(new OrderCreatedEvent(ORDER_ID), new OrderConfirmedEvent(ORDER_ID))
                 .when(new ConfirmOrderCommand(ORDER_ID))
                 .expectNoEvents();
+    }
+
+    @Test
+    void givenOrderCreatedEvent_whenShipOrderCommand_thenShouldThrowUnconfirmedOrderException() {
+        fixture.given(new OrderCreatedEvent(ORDER_ID))
+                .when(new ShipOrderCommand(ORDER_ID))
+                .expectException(UnconfirmedOrderException.class);
     }
 }
