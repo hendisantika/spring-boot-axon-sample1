@@ -4,8 +4,10 @@ import com.hendisantika.springbootaxonsample1.coreapi.command.AddProductCommand;
 import com.hendisantika.springbootaxonsample1.coreapi.command.CreateOrderCommand;
 import com.hendisantika.springbootaxonsample1.coreapi.events.OrderCreatedEvent;
 import com.hendisantika.springbootaxonsample1.coreapi.events.ProductAddedEvent;
+import com.hendisantika.springbootaxonsample1.coreapi.exceptions.DuplicateOrderLineException;
 import org.axonframework.test.aggregate.AggregateTestFixture;
 import org.axonframework.test.aggregate.FixtureConfiguration;
+import org.axonframework.test.matchers.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -43,5 +45,13 @@ class OrderAggregateTest {
         fixture.given(new OrderCreatedEvent(ORDER_ID))
                 .when(new AddProductCommand(ORDER_ID, PRODUCT_ID))
                 .expectEvents(new ProductAddedEvent(ORDER_ID, PRODUCT_ID));
+    }
+
+    @Test
+    void givenOrderCreatedEventAndProductAddedEvent_whenAddProductCommandForSameProductId_thenShouldThrowDuplicateOrderLineException() {
+        fixture.given(new OrderCreatedEvent(ORDER_ID), new ProductAddedEvent(ORDER_ID, PRODUCT_ID))
+                .when(new AddProductCommand(ORDER_ID, PRODUCT_ID))
+                .expectException(DuplicateOrderLineException.class)
+                .expectExceptionMessage(Matchers.predicate(message -> ((String) message).contains(PRODUCT_ID)));
     }
 }
