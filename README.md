@@ -8,6 +8,12 @@ During this guide, both Axon Framework and [Axon Server](https://axoniq.io/produ
 utilized. The former will contain our implementation and the latter will be our dedicated Event Store and Message
 Routing solution.
 
+Or You can run Axon Server using docker by using this command:
+
+```shell
+docker run -d --name axonserver -p 8024:8024 -p 8124:8124 axoniq/axonserver
+```
+
 The sample application we'll be building focuses on an Order domain. For this, **we'll be leveraging the CQRS and Event
 Sourcing building blocks Axon provides us.**
 
